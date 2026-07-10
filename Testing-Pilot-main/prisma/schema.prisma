@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ArtifactType {
+  REQUIREMENT
+  TEST_CASES
+  AUTOMATION_SCRIPT
+  BUG_ANALYSIS
+  TEST_DATA
+  TEST_REPORT
+  API_TESTS
+  RELEASE_RISK
+  CONTENT_MATCH
+  DESIGN_MATCH
+  BULK_URL_QA
+}
+
+model User {
+  id             String           @id @default(cuid())
+  name           String
+  email          String           @unique
+  company        String?
+  passwordHash   String
+  role           Role             @default(USER)
+  approvalStatus ApprovalStatus   @default(PENDING)
+  creditsBalance Int              @default(250)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  lastLoginAt    DateTime?
+  projects       Project[]
+  usageEvents    UsageEvent[]
+  subscription   Subscription?
+}
+
+model SubscriptionPlan {
+  id              String         @id @default(cuid())
+  name            String         @unique
+  slug            String         @unique
+  priceMonthly    Int
+  creditsPerMonth Int
+  description     String
+  features        Json
+  stripePriceId   String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  subscriptions   Subscription[]
+}
+
+model Subscription {
+  id                   String           @id @default(cuid())
+  userId               String           @unique
+  planId               String
+  status               String           @default("trialing")
+  currentPeriodEnd     DateTime?
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+  user                 User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan                 SubscriptionPlan @relation(fields: [planId], references: [id])
+}
+
+model Project {
+  id          String            @id @default(cuid())
+  ownerId     String
+  name        String
+  description String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  owner       User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  artifacts   ProjectArtifact[]
+  usageEvents UsageEvent[]
+}
+
+model ProjectArtifact {
+  id          String       @id @default(cuid())
+  projectId   String
+  type        ArtifactType
+  title       String
+  sourceName  String?
+  inputText   String?
+  outputJson  Json?
+  outputText  String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  project     Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model UsageEvent {
+  id          String   @id @default(cuid())
+  userId      String
+  projectId   String?
+  action      String
+  creditsUsed Int
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project     Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+}

@@ -1,0 +1,68 @@
+name: Build, Publish and Deploy
+
+on:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    env:
+      REPO_OWNER: ${{ github.repository_owner }}
+      REPO_NAME: ${{ github.event.repository.name }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to GHCR
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build and push API image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: Dockerfile.api
+          push: true
+          tags: |
+            ghcr.io/${{ env.REPO_OWNER }}/qa-copilot-api:${{ github.sha }}
+            ghcr.io/${{ env.REPO_OWNER }}/qa-copilot-api:latest
+
+      - name: Build and push Web image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: Dockerfile.web
+          push: true
+          tags: |
+            ghcr.io/${{ env.REPO_OWNER }}/qa-copilot-web:${{ github.sha }}
+            ghcr.io/${{ env.REPO_OWNER }}/qa-copilot-web:latest
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    steps:
+      - name: Deploy to remote server via SSH (optional)
+        if: secrets.SSH_HOST && secrets.SSH_PRIVATE_KEY
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT || '22' }}
+          script: |
+            set -e
+            cd ${{ secrets.DEPLOY_PATH }}
+            # Login to GHCR on the remote host if a PAT was provided (so private images can be pulled)
+            if [ -n "${{ secrets.GHCR_PAT }}" ]; then
+              echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u "${{ secrets.GHCR_USER || github.actor }}" --password-stdin || true
+            fi
+            docker compose pull || true
+            docker compose up -d --remove-orphans

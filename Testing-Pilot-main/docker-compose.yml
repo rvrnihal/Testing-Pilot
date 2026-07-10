@@ -1,0 +1,50 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: qa_copilot
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/qa_copilot?schema=public
+      JWT_SECRET: change-me-super-secret
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4.1-mini}
+      HUGGINGFACE_API_KEY: ${HUGGINGFACE_API_KEY:-}
+      HUGGINGFACE_MODEL: ${HUGGINGFACE_MODEL:-Qwen/Qwen2.5-7B-Instruct}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_PRICE_STARTER: ${STRIPE_PRICE_STARTER:-}
+      STRIPE_PRICE_GROWTH: ${STRIPE_PRICE_GROWTH:-}
+      STRIPE_PRICE_SCALE: ${STRIPE_PRICE_SCALE:-}
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      NEXT_PUBLIC_API_URL: http://localhost:4000/api
+      API_PORT: 4000
+      CORS_ORIGIN: http://localhost:3000
+    ports:
+      - "4000:4000"
+    depends_on:
+      - postgres
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    environment:
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      NEXT_PUBLIC_API_URL: http://localhost:4000/api
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:

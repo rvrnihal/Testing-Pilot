@@ -1,0 +1,11 @@
+Test Case ID,Title,Area,Execution Status,Actual Result,Remarks
+TC-001,Landing Page Availability,Public Web,Passed,Landing page loaded and navigation links opened correctly.,Validated on localhost build.
+TC-002,Register a New User,Auth,Passed,Registration completed and redirected to login with approval notice.,User creation flow behaved as expected.
+TC-003,Validate Pending Approval Restriction,Auth,Passed,Pending user login was blocked with approval message.,Matches expected restriction.
+TC-004,Admin Approval Workflow,Admin,Passed,Admin approved the pending user and status updated successfully.,Credits section visible after approval.
+TC-005,Approved User Login,Dashboard,Passed,Approved user reached dashboard successfully.,Overview widgets loaded.
+TC-006,Project Creation,Projects,Passed,Project created and available for selection in workspace.,Project workspace updated immediately.
+TC-007,AI Workflow Validation,AI Workflow,Passed,AI workflow completed and structured output was displayed.,Test Data flow verified in the local app.
+TC-008,File Upload Workflow,AI Workflow,Passed,CSV upload accepted and processed without server error.,Upload path verified through local run.
+TC-009,Export Validation,Exports,Blocked,Executed report export pending final user verification in browser.,Use Reports tab with this file to complete export validation.
+TC-010,Billing Fallback Validation,Billing,Not Executed,Billing flow was not exercised in this local session.,Stripe keys remain blank; execution deferred.

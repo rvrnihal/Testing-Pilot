@@ -1,0 +1,15 @@
+node_modules
+.next
+.next-*
+temp-next
+dist
+coverage
+*.log
+.next-write-check.txt
+.qualizeal-page.html
+_backups
+.env
+prisma/dev.db
+prisma/dev.db-journal
+backend/dist
+backend/uploads

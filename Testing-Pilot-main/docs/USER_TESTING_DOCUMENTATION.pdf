@@ -1,0 +1,888 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R 5 0 R 7 0 R 9 0 R 11 0 R 13 0 R 15 0 R 17 0 R 19 0 R] /Count 9 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 21 0 R >> >> /Contents 4 0 R >>
+endobj
+4 0 obj
+<< /Length 1784 >>
+stream
+BT
+/F1 11 Tf
+1 0 0 1 48 782 Tm
+(# QA Copilot User Testing Documentation) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(## Purpose) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(This document explains how to verify that QA Copilot is working correctly from a user and) Tj
+0 -16 Td
+(admin perspective. It is intended for demos, handoff, internal QA, and client walkthroughs.) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(## Application Overview) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(QA Copilot is a full-stack QA assistance platform with:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(- Next.js frontend) Tj
+0 -16 Td
+(- Express backend API) Tj
+0 -16 Td
+(- PostgreSQL database through Prisma) Tj
+0 -16 Td
+(- JWT-based authentication) Tj
+0 -16 Td
+(- Admin approval workflow) Tj
+0 -16 Td
+(- AI-assisted QA utilities such as test case generation, bug analysis, release risk) Tj
+0 -16 Td
+(analysis, API testing, content match, and design match) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(## Environments and URLs) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Default local URLs:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(- Frontend: `http://localhost:3000`) Tj
+0 -16 Td
+(- API: `http://localhost:4000`) Tj
+0 -16 Td
+(- API health check: `http://localhost:4000/api/health`) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(## Required Prerequisites) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Before testing, confirm the following are available:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(- Node.js and npm installed) Tj
+0 -16 Td
+(- PostgreSQL database available) Tj
+0 -16 Td
+(- `.env` configured correctly) Tj
+0 -16 Td
+(- Dependencies installed) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Minimum environment values:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(```env) Tj
+0 -16 Td
+(DATABASE_URL=postgresql://...) Tj
+0 -16 Td
+(JWT_SECRET=your-secret) Tj
+0 -16 Td
+(OPENAI_API_KEY=your-openai-key) Tj
+0 -16 Td
+(OPENAI_MODEL=gpt-4.1-mini) Tj
+0 -16 Td
+(NEXT_PUBLIC_APP_URL=http://localhost:3000) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 21 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 1538 >>
+stream
+BT
+/F1 11 Tf
+1 0 0 1 48 782 Tm
+(NEXT_PUBLIC_API_URL=http://localhost:4000/api) Tj
+0 -16 Td
+(API_HOST=0.0.0.0) Tj
+0 -16 Td
+(API_PORT=4000) Tj
+0 -16 Td
+(CORS_ORIGIN=http://localhost:3000) Tj
+0 -16 Td
+(```) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Notes:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(- AI features require a valid `OPENAI_API_KEY`.) Tj
+0 -16 Td
+(- Stripe values are optional for local testing.) Tj
+0 -16 Td
+(- If Stripe is not configured, subscription updates fall back to a local update flow.) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(## Initial Setup) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Run the following commands from the project root:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(```powershell) Tj
+0 -16 Td
+(npm install) Tj
+0 -16 Td
+(npm run db:push) Tj
+0 -16 Td
+(npm run db:seed) Tj
+0 -16 Td
+(npm run dev) Tj
+0 -16 Td
+(```) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(## Seeded Admin Account) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(The seed script creates a default admin account:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(- Email: `admin@qacopilot.ai`) Tj
+0 -16 Td
+(- Password: `Admin@123`) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(This account is used to approve newly registered users and validate the admin console.) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(## Test Scope) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(The main test scope includes:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(- Landing page availability) Tj
+0 -16 Td
+(- User registration) Tj
+0 -16 Td
+(- Pending approval handling) Tj
+0 -16 Td
+(- Admin approval flow) Tj
+0 -16 Td
+(- Approved user login) Tj
+0 -16 Td
+(- Dashboard loading) Tj
+0 -16 Td
+(- Project creation) Tj
+0 -16 Td
+(- AI workflow execution) Tj
+ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 21 0 R >> >> /Contents 8 0 R >>
+endobj
+8 0 obj
+<< /Length 1627 >>
+stream
+BT
+/F1 11 Tf
+1 0 0 1 48 782 Tm
+(- Export functionality) Tj
+0 -16 Td
+(- Billing fallback behavior) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(## Smoke Test Checklist) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Use this short checklist to quickly confirm the application is alive.) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(1. Open `http://localhost:3000`) Tj
+0 -16 Td
+(2. Confirm the landing page loads correctly) Tj
+0 -16 Td
+(3. Open `http://localhost:4000/api/health`) Tj
+0 -16 Td
+(4. Confirm the API response is `{"status":"ok"}`) Tj
+0 -16 Td
+(5. Login with the admin account) Tj
+0 -16 Td
+(6. Confirm the admin console opens successfully) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(If all items pass, the application is running at a basic operational level.) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(## End-to-End User Test Cases) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(### Test Case 1: Landing Page Availability) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Steps:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(1. Open `http://localhost:3000`) Tj
+0 -16 Td
+(2. Verify the hero section and navigation buttons are visible) Tj
+0 -16 Td
+(3. Click `Start free trial`) Tj
+0 -16 Td
+(4. Click `Login`) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Expected Result:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(- Landing page loads without errors) Tj
+0 -16 Td
+(- `Start free trial` opens `/register`) Tj
+0 -16 Td
+(- `Login` opens `/login`) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(### Test Case 2: Register a New User) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Sample data:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(- Full name: `Test User`) Tj
+0 -16 Td
+(- Email: any new unused email address) Tj
+0 -16 Td
+(- Password: `TestUser@123`) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Steps:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(1. Open `/register`) Tj
+ET
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 21 0 R >> >> /Contents 10 0 R >>
+endobj
+10 0 obj
+<< /Length 1554 >>
+stream
+BT
+/F1 11 Tf
+1 0 0 1 48 782 Tm
+(2. Fill the registration form) Tj
+0 -16 Td
+(3. Submit the form) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Expected Result:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(- Registration completes successfully) Tj
+0 -16 Td
+(- User is redirected to `/login?registered=1`) Tj
+0 -16 Td
+(- The screen shows a message that admin approval is required) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(### Test Case 3: Validate Pending Approval Restriction) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Steps:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(1. Attempt to log in with the newly created user before approval) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Expected Result:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(- Login is blocked) Tj
+0 -16 Td
+(- User sees a pending approval message) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(### Test Case 4: Admin Approval Workflow) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Steps:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(1. Login using the admin account) Tj
+0 -16 Td
+(2. Open `/admin`) Tj
+0 -16 Td
+(3. Locate the newly registered user) Tj
+0 -16 Td
+(4. Approve the user) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Expected Result:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(- Admin dashboard loads successfully) Tj
+0 -16 Td
+(- New user is visible in the user operations area) Tj
+0 -16 Td
+(- Approval action completes successfully) Tj
+0 -16 Td
+(- User status changes from pending to approved) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Optional validation:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(- Assign additional credits) Tj
+0 -16 Td
+(- Confirm updated credit balance is reflected) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(### Test Case 5: Approved User Login) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Steps:) Tj
+ET
+endstream
+endobj
+11 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 21 0 R >> >> /Contents 12 0 R >>
+endobj
+12 0 obj
+<< /Length 1524 >>
+stream
+BT
+/F1 11 Tf
+1 0 0 1 48 782 Tm
+() Tj
+0 -16 Td
+(1. Logout from the admin account) Tj
+0 -16 Td
+(2. Login with the approved user account) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Expected Result:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(- User is redirected to `/dashboard`) Tj
+0 -16 Td
+(- Dashboard loads successfully) Tj
+0 -16 Td
+(- Credits, actions, and recent activity are visible) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(### Test Case 6: Project Creation) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Sample data:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(- Project name: `Sample QA Project`) Tj
+0 -16 Td
+(- Description: `Testing application flow`) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Steps:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(1. Open the dashboard) Tj
+0 -16 Td
+(2. Create a new project) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Expected Result:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(- Project is created successfully) Tj
+0 -16 Td
+(- Project appears in the project workspace) Tj
+0 -16 Td
+(- Project can be selected for AI actions) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(### Test Case 7: AI Workflow Validation) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Recommended first workflow: `Bug Analysis`) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Sample input:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(```text) Tj
+0 -16 Td
+(Login fails for some users after password reset.) Tj
+0 -16 Td
+(Observed behavior: API returns 401 after reset.) Tj
+0 -16 Td
+(Possible clues: token mismatch, stale session, or password hash issue.) Tj
+0 -16 Td
+(```) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Steps:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(1. Open the `Bug Analysis` section) Tj
+0 -16 Td
+(2. Paste the sample input) Tj
+ET
+endstream
+endobj
+13 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 21 0 R >> >> /Contents 14 0 R >>
+endobj
+14 0 obj
+<< /Length 1452 >>
+stream
+BT
+/F1 11 Tf
+1 0 0 1 48 782 Tm
+(3. Run the action) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Expected Result:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(- Request completes successfully) Tj
+0 -16 Td
+(- Output is shown in the result panel) Tj
+0 -16 Td
+(- Recent activity updates) Tj
+0 -16 Td
+(- Used credits increase) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Important:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(- If the OpenAI key is missing or invalid, this test will fail even if the app itself is) Tj
+0 -16 Td
+(otherwise running correctly.) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(### Test Case 8: File Upload Workflow) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Test one of the following:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(- Generate Test Cases) Tj
+0 -16 Td
+(- Generate Test Report) Tj
+0 -16 Td
+(- Generate API Tests) Tj
+0 -16 Td
+(- Content Match) Tj
+0 -16 Td
+(- Design Match) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Steps:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(1. Open one workflow) Tj
+0 -16 Td
+(2. Upload a supported file) Tj
+0 -16 Td
+(3. Run the action) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Expected Result:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(- File upload is accepted) Tj
+0 -16 Td
+(- Processing completes without server error) Tj
+0 -16 Td
+(- Structured output is shown) Tj
+0 -16 Td
+(- Export actions are available when applicable) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(### Test Case 9: Export Validation) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(After generating a result, test available exports such as:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(- JSON) Tj
+0 -16 Td
+(- CSV) Tj
+0 -16 Td
+(- Excel) Tj
+ET
+endstream
+endobj
+15 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 21 0 R >> >> /Contents 16 0 R >>
+endobj
+16 0 obj
+<< /Length 1500 >>
+stream
+BT
+/F1 11 Tf
+1 0 0 1 48 782 Tm
+(- PDF) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Expected Result:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(- File downloads successfully) Tj
+0 -16 Td
+(- Downloaded file opens successfully) Tj
+0 -16 Td
+(- Exported content matches the generated result) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(### Test Case 10: Billing Fallback Validation) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Condition:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(- Stripe keys are left empty) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Steps:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(1. Trigger a plan change or billing flow if exposed in the UI) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Expected Result:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(- The application does not crash) Tj
+0 -16 Td
+(- Subscription updates locally without redirecting to Stripe) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(## API Validation Points) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Useful endpoints for direct checks:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(- `GET /api/health`) Tj
+0 -16 Td
+(- `POST /api/auth/register`) Tj
+0 -16 Td
+(- `POST /api/auth/login`) Tj
+0 -16 Td
+(- `GET /api/auth/me`) Tj
+0 -16 Td
+(- `GET /api/dashboard/overview`) Tj
+0 -16 Td
+(- `GET /api/projects`) Tj
+0 -16 Td
+(- `POST /api/projects`) Tj
+0 -16 Td
+(- `GET /api/admin/overview`) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Access rules:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(- Most routes require authentication) Tj
+0 -16 Td
+(- Dashboard, projects, billing, and AI routes require an approved user) Tj
+0 -16 Td
+(- Admin routes require an approved admin) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(## Pass Criteria) Tj
+0 -16 Td
+() Tj
+ET
+endstream
+endobj
+17 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 21 0 R >> >> /Contents 18 0 R >>
+endobj
+18 0 obj
+<< /Length 1535 >>
+stream
+BT
+/F1 11 Tf
+1 0 0 1 48 782 Tm
+(The application can be considered working when all of the following pass:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(- Landing page loads) Tj
+0 -16 Td
+(- API health endpoint responds successfully) Tj
+0 -16 Td
+(- User registration works) Tj
+0 -16 Td
+(- Pending users cannot access the dashboard) Tj
+0 -16 Td
+(- Admin approval works) Tj
+0 -16 Td
+(- Approved users can log in) Tj
+0 -16 Td
+(- Dashboard loads correctly) Tj
+0 -16 Td
+(- Project creation works) Tj
+0 -16 Td
+(- At least one AI workflow succeeds) Tj
+0 -16 Td
+(- At least one export succeeds) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(## Common Failure Reasons) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(### AI workflows fail) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Possible causes:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(- Missing `OPENAI_API_KEY`) Tj
+0 -16 Td
+(- Invalid OpenAI key) Tj
+0 -16 Td
+(- Model access issue) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(### Frontend loads but data does not) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Possible causes:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(- Incorrect `NEXT_PUBLIC_API_URL`) Tj
+0 -16 Td
+(- Backend not running) Tj
+0 -16 Td
+(- CORS origin mismatch) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(### Admin login fails) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Possible causes:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(- Seed script did not run) Tj
+0 -16 Td
+(- Seed script ran against a different database) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(### Registration works but dashboard or approval fails) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Possible causes:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(- Prisma schema not pushed) Tj
+0 -16 Td
+(- Wrong `DATABASE_URL`) Tj
+ET
+endstream
+endobj
+19 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 21 0 R >> >> /Contents 20 0 R >>
+endobj
+20 0 obj
+<< /Length 991 >>
+stream
+BT
+/F1 11 Tf
+1 0 0 1 48 782 Tm
+(- Backend cannot access PostgreSQL) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(## Recommended Demo Flow) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(For live demonstrations, use this order:) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(1. API health check) Tj
+0 -16 Td
+(2. Landing page) Tj
+0 -16 Td
+(3. User registration) Tj
+0 -16 Td
+(4. Admin login) Tj
+0 -16 Td
+(5. User approval) Tj
+0 -16 Td
+(6. Approved user login) Tj
+0 -16 Td
+(7. Project creation) Tj
+0 -16 Td
+(8. AI workflow execution) Tj
+0 -16 Td
+(9. Export download) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(## Document References) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(- [README.md]\(C:\\Users\\shaya\\OneDrive\\Desktop\\Test Engine\\README.md\)) Tj
+0 -16 Td
+(- [TESTING_GUIDE.md]\(C:\\Users\\shaya\\OneDrive\\Desktop\\Test Engine\\TESTING_GUIDE.md\)) Tj
+0 -16 Td
+(- [.env.example]\(C:\\Users\\shaya\\OneDrive\\Desktop\\Test Engine\\.env.example\)) Tj
+0 -16 Td
+(- [prisma/seed.js]\(C:\\Users\\shaya\\OneDrive\\Desktop\\Test Engine\\prisma\\seed.js\)) Tj
+0 -16 Td
+() Tj
+ET
+endstream
+endobj
+21 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 22
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000168 00000 n 
+0000000295 00000 n 
+0000002131 00000 n 
+0000002258 00000 n 
+0000003848 00000 n 
+0000003975 00000 n 
+0000005654 00000 n 
+0000005782 00000 n 
+0000007389 00000 n 
+0000007518 00000 n 
+0000009095 00000 n 
+0000009224 00000 n 
+0000010729 00000 n 
+0000010858 00000 n 
+0000012411 00000 n 
+0000012540 00000 n 
+0000014128 00000 n 
+0000014257 00000 n 
+0000015300 00000 n 
+trailer
+<< /Size 22 /Root 1 0 R >>
+startxref
+15371
+%%EOF

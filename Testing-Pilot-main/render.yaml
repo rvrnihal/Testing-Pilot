@@ -1,0 +1,38 @@
+services:
+  - name: qa-copilot-api
+    type: web
+    runtime: docker
+    plan: free
+    region: singapore
+    branch: main
+    dockerfilePath: ./Dockerfile.api
+    dockerContext: .
+    autoDeployTrigger: commit
+    healthCheckPath: /api/health
+    envVars:
+      - key: OPENAI_MODEL
+        value: gpt-4.1-mini
+      - key: HUGGINGFACE_MODEL
+        value: Qwen/Qwen2.5-7B-Instruct
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: HUGGINGFACE_API_KEY
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_PRICE_STARTER
+        sync: false
+      - key: STRIPE_PRICE_GROWTH
+        sync: false
+      - key: STRIPE_PRICE_SCALE
+        sync: false
+      - key: NEXT_PUBLIC_APP_URL
+        sync: false
+      - key: NEXT_PUBLIC_API_URL
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
